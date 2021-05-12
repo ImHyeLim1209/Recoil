@@ -1,5 +1,5 @@
 import React from 'react';
-import { atom, useRecoilState, useResetRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { atom, useResetRecoilState, useRecoilValue, useSetRecoilState, selector } from 'recoil';
 import './App.css';
 
 const countState = atom({
@@ -7,12 +7,24 @@ const countState = atom({
   default: 0
 });
 
+const countStrState = selector({
+  key: 'countStrState',
+  get: ({ get }) => {
+    const value = get(countState);
+    return `현재 값은 ${value} 입니다.`;
+  },
+  set: ({ set }) => {
+    set(countState, 100);
+  }
+});
 
 function App() {
-  //const [count, setCount] = useRecoilState(countState);
   const count = useRecoilValue(countState);
   const setCount = useSetRecoilState(countState);
   const resetCount = useResetRecoilState(countState);
+
+  const countStr = useRecoilValue(countStrState);
+  const setCountHundred = useSetRecoilState(countStrState);
 
   const increaseCount = () => {
     setCount((preCount) => preCount + 1);
@@ -30,6 +42,7 @@ function App() {
         <button class="btn-decrease" onClick={decreaseCount}>decrease</button>
         <button class="btn-reset" onClick={resetCount}>reset</button>
       </div>
+      <div class="strValue" onClick={setCountHundred}>{countStr}</div>
     </div>
   );
 }
